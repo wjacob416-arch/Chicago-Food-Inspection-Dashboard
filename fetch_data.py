@@ -2,7 +2,7 @@ import requests
 import json
 import database
 
-api_url = "https://data.cityofchicago.org/resource/4ijn-s7e5.json?$limit=1000"
+api_url = "https://data.cityofchicago.org/resource/4ijn-s7e5.json?$limit=10000"
 
 
 def fetch_url():
