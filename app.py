@@ -4,7 +4,7 @@ import fetch_data
 
 app = Flask(__name__)
 
-database.create_tables()
+database.create_database()
 fetch_data.run()
 
 # Home page - renders the search form
