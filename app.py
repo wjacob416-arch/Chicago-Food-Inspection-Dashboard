@@ -1,7 +1,11 @@
 from flask import Flask, render_template, request, abort
 import database
+import fetch_data
 
 app = Flask(__name__)
+
+database.create_tables()
+fetch_data.run()
 
 # Home page - renders the search form
 @app.route("/")
