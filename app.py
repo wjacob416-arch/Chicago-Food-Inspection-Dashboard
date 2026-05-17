@@ -1,0 +1,54 @@
+from flask import Flask, render_template, request, abort
+import database
+
+app = Flask(__name__)
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+@app.route("/search")
+def search():
+    q = request.args.get("q","")
+    zip_code = request.args.get("zip","")
+    conn = database.get_connection()
+    
+    if zip_code:
+       results = conn.execute(
+            "SELECT * FROM establishment WHERE zip_code = ? AND name LIKE ? COLLATE NOCASE",
+            (zip_code, f"%{q}%")
+        ).fetchall()
+    else:
+        results = conn.execute(
+            "SELECT * FROM establishment WHERE name LIKE ? COLLATE NOCASE",
+            (f"%{q}%",)
+        ).fetchall()
+
+    
+    conn.close()
+    return render_template("results.html", results=results, q=q, zip=zip_code)
+@app.route("/restaurant/<license_number>")
+def details(license_number):
+    conn = database.get_connection()
+    
+    establishment = conn.execute(
+        "SELECT * FROM establishment WHERE license_number = ?",
+        (license_number,)
+    ).fetchone()
+    
+    inspections = conn.execute(
+        """SELECT i.id, i.date, i.result, i.inspection_type,
+                  v.code, v.description, v.severity
+           FROM inspection i
+           LEFT JOIN violation v ON v.inspection_id = i.id
+           WHERE i.license_number = ?
+           ORDER BY i.date DESC""",
+        (license_number,)
+    ).fetchall()
+
+    conn.close()
+    if establishment is None:
+        abort(404)
+    return render_template("detail.html", establishment=establishment, inspections=inspections)
+    
+if __name__ == "__main__":
+    app.run(debug=True)
