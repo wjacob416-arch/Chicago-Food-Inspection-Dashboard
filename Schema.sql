@@ -1,3 +1,4 @@
+-- One establishment can have many inspections
 CREATE TABLE IF NOT EXISTS establishment (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     license_number TEXT NOT NULL UNIQUE CHECK(length(license_number) <= 20),
@@ -7,6 +8,7 @@ CREATE TABLE IF NOT EXISTS establishment (
     neighborhood TEXT CHECK(length(neighborhood) <= 100)
 );
 
+-- One inspection can have many violations
 CREATE TABLE IF NOT EXISTS inspection (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     license_number TEXT NOT NULL,
@@ -16,6 +18,7 @@ CREATE TABLE IF NOT EXISTS inspection (
     FOREIGN KEY (license_number) REFERENCES establishment(license_number)
 );
 
+-- Each violation belongs to one inspection
 CREATE TABLE IF NOT EXISTS violation (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     inspection_id INTEGER NOT NULL,
@@ -25,6 +28,7 @@ CREATE TABLE IF NOT EXISTS violation (
     FOREIGN KEY (inspection_id) REFERENCES inspection(id)
 );
 
+-- Indexes to speed up common search queries
 CREATE INDEX IF NOT EXISTS idx_establishment_name ON establishment(name);
 CREATE INDEX IF NOT EXISTS idx_establishment_zip ON establishment(zip_code);
 CREATE INDEX IF NOT EXISTS idx_establishment_neighborhood ON establishment(neighborhood);

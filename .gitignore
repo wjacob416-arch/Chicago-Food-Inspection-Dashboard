@@ -1,3 +1,6 @@
-﻿food_inspection.db
+# SQLite database - recreated by fetch_data.py, too large for GitHub
+food_inspection.db
+
+# Python cache files - auto-generated, not needed in repo
 __pycache__/
 *.pyc
